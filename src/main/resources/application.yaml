@@ -1,0 +1,42 @@
+server:
+  port: 8761
+  shutdown: graceful
+  compression:
+    enabled: true
+    mime-types: text/html,text/xml,text/plain,text/css,application/javascript,application/json,image/svg+xml
+    min-response-size: 1024
+spring:
+  application:
+    name: service-registry
+
+eureka:
+  client:
+    enabled: true
+    healthcheck:
+      enabled: true
+    fetch-registry: false
+    register-with-eureka: false
+    instance-info-replication-interval-seconds: 30
+    registry-fetch-interval-seconds: 30
+    service-url:
+      defaultZone: http://localhost:${server.port}/eureka/
+  instance:
+    appname: service-registry
+    instanceId: service-registry:${spring.application.instance-id:${random.value}}
+    prefer-ip-address: true
+    lease-renewal-interval-in-seconds: 10
+    lease-expiration-duration-in-seconds: 30
+    status-page-url-path: ${management.endpoints.web.base-path}/info
+    health-check-url-path: ${management.endpoints.web.base-path}/health
+  server:
+    enable-self-preservation: true
+  dashboard:
+    path: /registry
+  environment: PROD
+
+management:
+  endpoints:
+    web:
+      base-path: /management
+      exposure:
+        include: [ 'health', 'info']
